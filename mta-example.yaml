@@ -1,0 +1,11 @@
+KAFKA:
+    HOSTS:
+        - kafka.p1.gra.queue.ovh.net:9092
+    TOPIC_REQUEST: queuetest.mta_request
+    TOPIC_ANSWER: queuetest.mta_answer
+    CLIENTID: clientID
+    GROUPID: dev
+
+DB:
+  driver: postgres
+  datasource: postgres://mta:mta@localhost/mta?sslmode=disable
