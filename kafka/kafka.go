@@ -1,12 +1,12 @@
 package kafka
 
 import (
+	"encoding/json"
 	"github.com/Shopify/sarama"
 	log "github.com/Sirupsen/logrus"
+	"github.com/bewiwi/mta/models"
 	"github.com/bsm/sarama-cluster"
 	"github.com/spf13/viper"
-	"github.com/bewiwi/mta/models"
-	"encoding/json"
 )
 
 func GetConfig() *sarama.Config {
@@ -49,18 +49,18 @@ func GetSyncProducer() sarama.SyncProducer {
 }
 
 type Producer struct {
-	topic string
+	topic    string
 	producer sarama.SyncProducer
 }
 
-func NewProducer() (*Producer){
+func NewProducer() *Producer {
 	return &Producer{
-		topic: viper.GetString("KAFKA.TOPIC_ANSWER"),
+		topic:    viper.GetString("KAFKA.TOPIC_ANSWER"),
 		producer: GetSyncProducer(),
 	}
 }
 
-func (p *Producer) SendAnswer(answer *models.CheckAnswer) error{
+func (p *Producer) SendAnswer(answer *models.CheckAnswer) error {
 	log.Debug("Sending answer: ", answer.Values)
 	answer.Print()
 	var err error

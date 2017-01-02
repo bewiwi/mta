@@ -46,11 +46,11 @@ func Run() {
 
 			ping := checks.NewPing(param.Host)
 			go func() {
-				answer , _ := ping.Run()
+				answer, _ := ping.Run()
 				err := producer.SendAnswer(answer)
 				if err != nil {
 					log.Error("Error sending answer")
-				}else{
+				} else {
 					consumer.MarkOffset(msg, "")
 				}
 			}()

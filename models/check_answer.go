@@ -2,8 +2,8 @@ package models
 
 import (
 	"fmt"
-	"time"
 	"os"
+	"time"
 )
 
 type CheckAnswer struct {
@@ -17,11 +17,11 @@ type CheckAnswer struct {
 func (c CheckAnswer) Print() {
 	fmt.Println("RequestID: ", c.RequestID)
 	fmt.Println("Hostname: ", c.Hostname)
-	if c.Error != ""{
+	if c.Error != "" {
 		fmt.Println("Error: ", c.Error)
 	}
 	for key, value := range c.Values {
-		fmt.Println(key, ": ",value)
+		fmt.Println(key, ": ", value)
 	}
 }
 func NewCheckAnswer() CheckAnswer {

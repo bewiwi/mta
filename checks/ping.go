@@ -1,12 +1,12 @@
 package checks
 
 import (
-	log "github.com/Sirupsen/logrus"
-	"github.com/sparrc/go-ping"
-	"github.com/bewiwi/mta/models"
 	"errors"
-	"time"
 	"fmt"
+	log "github.com/Sirupsen/logrus"
+	"github.com/bewiwi/mta/models"
+	"github.com/sparrc/go-ping"
+	"time"
 )
 
 type Ping struct {
@@ -19,7 +19,7 @@ func NewPing(host string) *Ping {
 	}
 }
 
-func (p *Ping) Run() (*models.CheckAnswer, error){
+func (p *Ping) Run() (*models.CheckAnswer, error) {
 	var err error
 	answer := models.NewCheckAnswer()
 
@@ -34,9 +34,9 @@ func (p *Ping) Run() (*models.CheckAnswer, error){
 
 	stats := pinger.Statistics()
 	if stats.PacketsRecv < pinger.Count {
-		err = errors.New(fmt.Sprintf("Timeout (%s)",pinger.Timeout.String()))
+		err = errors.New(fmt.Sprintf("Timeout (%s)", pinger.Timeout.String()))
 		return handleError(&answer, err)
-	}else{
+	} else {
 		answer.Values = map[string]float64{
 			"rtts": stats.AvgRtt.Seconds(),
 		}
@@ -46,7 +46,7 @@ func (p *Ping) Run() (*models.CheckAnswer, error){
 
 }
 
-func handleError(answer *models.CheckAnswer,err error) (*models.CheckAnswer,error){
+func handleError(answer *models.CheckAnswer, err error) (*models.CheckAnswer, error) {
 	log.WithError(err).Error("Error on ping")
 	answer.Error = err.Error()
 	return answer, err

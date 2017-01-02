@@ -1,19 +1,19 @@
 package database
 
-
 import (
 	"database/sql"
 
-	_ "github.com/lib/pq"
 	log "github.com/Sirupsen/logrus"
-	"github.com/spf13/viper"
 	"github.com/bewiwi/mta/models"
+	_ "github.com/lib/pq"
+	"github.com/spf13/viper"
 )
+
 var _db *sql.DB
 
-func getDB() *sql.DB{
+func getDB() *sql.DB {
 	if _db != nil {
-		return  _db
+		return _db
 	}
 
 	db, err := sql.Open(viper.GetString("DB.driver"),
@@ -24,7 +24,7 @@ func getDB() *sql.DB{
 	return db
 }
 
-func GetChecks() []models.CheckRequestV1{
+func GetChecks() []models.CheckRequestV1 {
 	db := getDB()
 	rows, err := db.Query("SELECT id, type, config, freqence FROM checks")
 	if err != nil {
@@ -49,7 +49,7 @@ func GetChecks() []models.CheckRequestV1{
 	return checks
 }
 
-func init()  {
+func init() {
 	viper.SetDefault("DB.driver", "postgres")
 	viper.SetDefault("DB.datasource", "user=mta dbname=mta")
 }

@@ -1,15 +1,15 @@
 package scheduler
 
 import (
-	"fmt"
 	"encoding/json"
-	"time"
-	"sync"
+	"fmt"
+	"github.com/Shopify/sarama"
+	log "github.com/Sirupsen/logrus"
 	"github.com/bewiwi/mta/database"
 	"github.com/bewiwi/mta/kafka"
-	log "github.com/Sirupsen/logrus"
-	"github.com/Shopify/sarama"
 	"github.com/spf13/viper"
+	"sync"
+	"time"
 )
 
 func Run() {
@@ -29,7 +29,7 @@ func Run() {
 				Topic: viper.GetString("KAFKA.TOPIC_REQUEST"),
 				Value: sarama.StringEncoder(value),
 			}
-			for{
+			for {
 				_, offset, err := p.SendMessage(msg)
 				if err != nil {
 					log.WithError(err).Error("error sendig")

@@ -9,8 +9,8 @@ type CheckRequestV1 struct {
 
 type CheckMetadaV1 struct {
 	Type string `json:"type"`
-	Freq int `json:"freq"`
-	Id int `json:"id"`
+	Freq int    `json:"freq"`
+	Id   int    `json:"id"`
 }
 
 type CheckPingParam struct {
