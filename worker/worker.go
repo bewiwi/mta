@@ -47,6 +47,7 @@ func Run() {
 			ping := checks.NewPing(param.Host)
 			go func() {
 				answer, _ := ping.Run()
+				answer.CheckID = checkRequest.Metadata.Id
 				err := producer.SendAnswer(answer)
 				if err != nil {
 					log.Error("Error sending answer")

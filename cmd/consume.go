@@ -20,8 +20,18 @@ var stdoutCmd = &cobra.Command{
 	},
 }
 
+// dbCmd represents the stdout command
+var dbCmd = &cobra.Command{
+	Use:   "db",
+	Short: "Consume and insert it in database",
+	Run: func(cmd *cobra.Command, args []string) {
+		consumer.RunDB()
+	},
+}
+
 func init() {
 	RootCmd.AddCommand(consumeCmd)
 	consumeCmd.AddCommand(stdoutCmd)
+	consumeCmd.AddCommand(dbCmd)
 
 }

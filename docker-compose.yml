@@ -7,6 +7,6 @@ services:
 #    build: .
 #    command: worker
 #    privileged: true
-  consumer:
-    build: .
-    command: consume stdout
+#  consumer:
+#    build: .
+#    command: consume stdout

@@ -7,7 +7,7 @@ import (
 )
 
 type CheckAnswer struct {
-	RequestID string
+	CheckID   int
 	Timestamp int64
 	Error     string
 	Hostname  string
@@ -15,7 +15,7 @@ type CheckAnswer struct {
 }
 
 func (c CheckAnswer) Print() {
-	fmt.Println("RequestID: ", c.RequestID)
+	fmt.Println("CheckID: ", c.CheckID)
 	fmt.Println("Hostname: ", c.Hostname)
 	if c.Error != "" {
 		fmt.Println("Error: ", c.Error)
