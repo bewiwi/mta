@@ -17,7 +17,6 @@ func GetConfig() *sarama.Config {
 	//config.Net.SASL.Password = Password
 	config.Version = sarama.V0_10_0_1
 	config.ClientID = viper.GetString("KAFKA.CLIENTID")
-
 	return config
 }
 
