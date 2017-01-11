@@ -28,6 +28,7 @@ func (p *Ping) Run() (*models.CheckAnswer, error) {
 	if err != nil {
 		return handleError(&answer, err)
 	}
+	pinger.SetPrivileged(true)
 	pinger.Timeout = 2 * time.Second
 	pinger.Count = 1
 	pinger.Run()
