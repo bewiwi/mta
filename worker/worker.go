@@ -7,11 +7,23 @@ import (
 	"github.com/bewiwi/mta/kafka"
 	"github.com/bewiwi/mta/models"
 	"github.com/spf13/viper"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func Run() {
 	consumer := kafka.GetConsumer(viper.GetStringSlice("KAFKA.TOPIC_REQUEST"))
 	producer := kafka.NewProducer()
+
+	// Can be better
+	ch := make(chan os.Signal)
+	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
+	go func(){
+		<- ch
+		log.Debug("Close consumer")
+		consumer.Close()
+	}()
 
 	// Consume errors
 	go func() {
