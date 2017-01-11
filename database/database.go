@@ -11,16 +11,17 @@ import (
 var _db *sql.DB
 
 func getDB() *sql.DB {
+	var err error
 	if _db != nil {
 		return _db
 	}
 
-	db, err := sql.Open(viper.GetString("DB.driver"),
+	_db, err = sql.Open(viper.GetString("DB.driver"),
 		viper.GetString("DB.datasource"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	return db
+	return _db
 }
 
 func init() {
