@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/bewiwi/mta/models"
-	"log"
+	log "github.com/Sirupsen/logrus"
 )
 
 var onceCreateCheckTable bool
@@ -45,7 +45,6 @@ func GetChecks() []models.CheckRequestV1 {
 			log.Fatal(err)
 		}
 		checks = append(checks, check)
-		//log.Println(string(check.Param))
 	}
 	err = rows.Err()
 	if err != nil {
