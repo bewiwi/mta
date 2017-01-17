@@ -20,6 +20,7 @@ func createResultTable() {
 	_, err := db.Query(`CREATE TABLE IF NOT EXISTS results
 	(
 		id serial NOT NULL,
+		worker VARCHAR,
 		timestamp NUMERIC,
 		check_id integer ,
 		result jsonb,
@@ -34,7 +35,7 @@ func InsertResult(c *models.CheckAnswer) {
 	createResultTable()
 	db := getDB()
 	log.Debug("Insert row in result table")
-	stmt, err := db.Prepare("INSERT INTO results (check_id, timestamp, result) VALUES ($1, $2, $3)")
+	stmt, err := db.Prepare("INSERT INTO results (worker, check_id, timestamp, result) VALUES ($1, $2, $3, $4)")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,7 +44,7 @@ func InsertResult(c *models.CheckAnswer) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = stmt.Exec(c.CheckID, c.Timestamp, result)
+	_, err = stmt.Exec(c.Hostname, c.CheckID, c.Timestamp, result)
 	if err != nil {
 		log.Fatal(err)
 	}
