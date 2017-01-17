@@ -5,18 +5,24 @@ import (
 	"github.com/Shopify/sarama"
 	log "github.com/Sirupsen/logrus"
 	"github.com/bewiwi/mta/models"
-	"github.com/bsm/sarama-cluster"
 	"github.com/spf13/viper"
+	"gopkg.in/bsm/sarama-cluster.v2"
 )
 
 func GetConfig() *sarama.Config {
 	config := sarama.NewConfig()
-	//config.Net.TLS.Enable = true
-	//config.Net.SASL.Enable = true
-	//config.Net.SASL.User = Username
-	//config.Net.SASL.Password = Password
+
+	config.Net.TLS.Enable = viper.GetBool("KAFKA.TLS")
+	if (viper.GetString("KAFKA.SASL_USER") != ""){
+		config.Net.SASL.Enable = true
+		config.Net.SASL.User = viper.GetString("KAFKA.SASL_USER")
+		config.Net.SASL.Password = viper.GetString("KAFKA.SASL_PASSWORD")
+	}
 	config.Version = sarama.V0_10_0_1
-	config.ClientID = viper.GetString("KAFKA.CLIENTID")
+	if (viper.GetString("KAFKA.CLIENTID") != ""){
+		config.ClientID = viper.GetString("KAFKA.CLIENTID")
+	}
+
 	return config
 }
 
@@ -39,10 +45,10 @@ func GetConsumer(topic []string) *cluster.Consumer {
 
 func GetSyncProducer() sarama.SyncProducer {
 	config := GetConfig()
-
+	config.Producer.Return.Successes = true
 	producer, err := sarama.NewSyncProducer(viper.GetStringSlice("KAFKA.HOSTS"), config)
 	if err != nil {
-		log.WithError(err).Fatal("Error during consumption")
+		log.WithError(err).Fatal("Error during connecting producer")
 	}
 	return producer
 }
@@ -75,4 +81,11 @@ func (p *Producer) SendAnswer(answer *models.CheckAnswer) error {
 		return err
 	}
 	return nil
+}
+
+
+func init() {
+	viper.SetDefault("KAFKA.TLS", true)
+	viper.SetDefault("KAFKA.SASL_USER", "")
+	viper.SetDefault("KAFKA.SASL_PASSWORD", "")
 }

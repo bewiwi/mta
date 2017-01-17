@@ -19,13 +19,6 @@ const (
 	StrategyRoundRobin Strategy = "roundrobin"
 )
 
-// Error instances are wrappers for internal errors with a context and
-// may be returned through the consumer's Errors() channel
-type Error struct {
-	Ctx string
-	error
-}
-
 // --------------------------------------------------------------------
 
 type none struct{}
@@ -42,7 +35,7 @@ type offsetInfo struct {
 
 func (i offsetInfo) NextOffset(fallback int64) int64 {
 	if i.Offset > -1 {
-		return i.Offset
+		return i.Offset + 1
 	}
 	return fallback
 }

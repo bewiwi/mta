@@ -3,10 +3,10 @@ services:
   scheduler:
     build: .
     command: scheduler
-#  worker:
-#    build: .
-#    command: worker
-#    privileged: true
-#  consumer:
-#    build: .
-#    command: consume stdout
+  worker:
+    build: .
+    command: worker
+    privileged: true
+  consumer:
+    build: .
+    command: consume stdout
