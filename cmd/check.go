@@ -19,8 +19,8 @@ var pingCmd = &cobra.Command{
 	Short: "Run a check ping ",
 	Run: func(cmd *cobra.Command, args []string) {
 		checkPing := checks.NewPing(hostPing)
-		answer, _ := checkPing.Run()
-		answer.Print()
+		response, _ := checkPing.Run()
+		response.Print()
 	},
 }
 

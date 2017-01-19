@@ -31,7 +31,7 @@ func createResultTable() {
 	}
 }
 
-func InsertResult(c *models.CheckAnswer) {
+func InsertResult(c *models.CheckResponse) {
 	createResultTable()
 	db := getDB()
 	log.Debug("Insert row in result table")
@@ -44,7 +44,7 @@ func InsertResult(c *models.CheckAnswer) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = stmt.Exec(c.Hostname, c.CheckID, c.Timestamp, result)
+	_, err = stmt.Exec(c.Hostname, c.CheckMetadata.Id, c.Timestamp, result)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -13,13 +13,13 @@ func GetConfig() *sarama.Config {
 	config := sarama.NewConfig()
 
 	config.Net.TLS.Enable = viper.GetBool("KAFKA.TLS")
-	if (viper.GetString("KAFKA.SASL_USER") != ""){
+	if viper.GetString("KAFKA.SASL_USER") != "" {
 		config.Net.SASL.Enable = true
 		config.Net.SASL.User = viper.GetString("KAFKA.SASL_USER")
 		config.Net.SASL.Password = viper.GetString("KAFKA.SASL_PASSWORD")
 	}
 	config.Version = sarama.V0_10_0_1
-	if (viper.GetString("KAFKA.CLIENTID") != ""){
+	if viper.GetString("KAFKA.CLIENTID") != "" {
 		config.ClientID = viper.GetString("KAFKA.CLIENTID")
 	}
 
@@ -65,11 +65,11 @@ func NewProducer() *Producer {
 	}
 }
 
-func (p *Producer) SendAnswer(answer *models.CheckAnswer) error {
-	log.Debug("Sending answer: ", answer.Values)
-	answer.Print()
+func (p *Producer) SendResponse(response *models.CheckResponse) error {
+	log.Debug("Sending response: ", response.Values)
+	response.Print()
 	var err error
-	value, err := json.Marshal(answer)
+	value, err := json.Marshal(response)
 	if err != nil {
 		log.WithError(err).Error("error jsonify")
 		return err
@@ -82,7 +82,6 @@ func (p *Producer) SendAnswer(answer *models.CheckAnswer) error {
 	}
 	return nil
 }
-
 
 func init() {
 	viper.SetDefault("KAFKA.TLS", true)

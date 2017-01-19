@@ -19,14 +19,14 @@ func NewPing(host string) *Ping {
 	}
 }
 
-func (p *Ping) Run() (*models.CheckAnswer, error) {
+func (p *Ping) Run() (*models.CheckResponse, error) {
 	var err error
-	answer := models.NewCheckAnswer()
+	response := models.NewCheckResponse()
 
 	log.Debug("PING: ", p.Host)
 	pinger, err := ping.NewPinger(p.Host)
 	if err != nil {
-		return handleError(&answer, err)
+		return handleError(&response, err)
 	}
 	pinger.SetPrivileged(true)
 	pinger.Timeout = 2 * time.Second
@@ -36,19 +36,19 @@ func (p *Ping) Run() (*models.CheckAnswer, error) {
 	stats := pinger.Statistics()
 	if stats.PacketsRecv < pinger.Count {
 		err = errors.New(fmt.Sprintf("Timeout (%s)", pinger.Timeout.String()))
-		return handleError(&answer, err)
+		return handleError(&response, err)
 	} else {
-		answer.Values = map[string]float64{
+		response.Values = map[string]float64{
 			"rtts": stats.AvgRtt.Seconds(),
 		}
 	}
 
-	return &answer, err
+	return &response, err
 
 }
 
-func handleError(answer *models.CheckAnswer, err error) (*models.CheckAnswer, error) {
+func handleError(response *models.CheckResponse, err error) (*models.CheckResponse, error) {
 	log.WithError(err).Error("Error on ping")
-	answer.Error = err.Error()
-	return answer, err
+	response.Error = err.Error()
+	return response, err
 }

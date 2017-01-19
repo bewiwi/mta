@@ -1,8 +1,8 @@
 package database
 
 import (
-	"github.com/bewiwi/mta/models"
 	log "github.com/Sirupsen/logrus"
+	"github.com/bewiwi/mta/models"
 )
 
 var onceCreateCheckTable bool

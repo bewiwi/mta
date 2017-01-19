@@ -19,8 +19,8 @@ func Run() {
 	// Can be better
 	ch := make(chan os.Signal)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
-	go func(){
-		<- ch
+	go func() {
+		<-ch
 		log.Debug("Close consumer")
 		consumer.Close()
 	}()
@@ -58,11 +58,11 @@ func Run() {
 
 			ping := checks.NewPing(param.Host)
 			go func() {
-				answer, _ := ping.Run()
-				answer.CheckID = checkRequest.Metadata.Id
-				err := producer.SendAnswer(answer)
+				response, _ := ping.Run()
+				response.CheckMetadata = checkRequest.Metadata
+				err := producer.SendResponse(response)
 				if err != nil {
-					log.Error("Error sending answer")
+					log.Error("Error sending response")
 				} else {
 					consumer.MarkOffset(msg, "")
 				}

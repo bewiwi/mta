@@ -12,3 +12,8 @@ KAFKA:
 DB:
   driver: postgres
   datasource: postgres://mta:mta@localhost/mta?sslmode=disable
+
+INFLUX:
+  HOST: http://localhost:8060
+  USER: user
+  PASSWORD: password

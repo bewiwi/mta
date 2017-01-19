@@ -6,16 +6,16 @@ import (
 	"time"
 )
 
-type CheckAnswer struct {
-	CheckID   int
+type CheckResponse struct {
+	CheckMetadata CheckMetadaV1
 	Timestamp int64
 	Error     string
 	Hostname  string
 	Values    map[string]float64
 }
 
-func (c CheckAnswer) Print() {
-	fmt.Println("CheckID: ", c.CheckID)
+func (c CheckResponse) Print() {
+	fmt.Println("CheckID: ", c.CheckMetadata.Id)
 	fmt.Println("Hostname: ", c.Hostname)
 	if c.Error != "" {
 		fmt.Println("Error: ", c.Error)
@@ -24,10 +24,10 @@ func (c CheckAnswer) Print() {
 		fmt.Println(key, ": ", value)
 	}
 }
-func NewCheckAnswer() CheckAnswer {
-	answer := CheckAnswer{}
-	answer.Timestamp = time.Now().UnixNano()
+func NewCheckResponse() CheckResponse {
+	response := CheckResponse{}
+	response.Timestamp = time.Now().UnixNano()
 	hostname, _ := os.Hostname()
-	answer.Hostname = hostname
-	return answer
+	response.Hostname = hostname
+	return response
 }

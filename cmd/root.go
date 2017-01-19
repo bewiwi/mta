@@ -15,7 +15,7 @@ var cfgFile string
 var RootCmd = &cobra.Command{
 	Use:   "mta",
 	Short: "A brief description of your application",
-	Run: func(cmd *cobra.Command, args []string) {},
+	Run:   func(cmd *cobra.Command, args []string) {},
 }
 
 func Execute() {
@@ -40,7 +40,6 @@ func initConfig() {
 
 	if cfgFile != "" { // enable ability to specify config file via flag
 		viper.SetConfigFile(cfgFile)
-		fmt.Println("tset", cfgFile)
 	}
 
 	// If a config file is found, read it in.

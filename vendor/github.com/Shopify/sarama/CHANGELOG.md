@@ -176,7 +176,7 @@ New Features:
 
 Improvements:
  - The consumer will not block if a single partition is not drained by the user;
-   all other partitions will continue to consume normally
+   all other partitions will continue to Consume normally
    ([#485](https://github.com/Shopify/sarama/pull/485)).
  - Formatting of error strings has been much improved
    ([#495](https://github.com/Shopify/sarama/pull/495)).
@@ -218,7 +218,7 @@ Bug Fixes:
 
 New Features:
  - The consumer now implements `Topics()` and `Partitions()` methods to enable
-   users to dynamically choose what topics/partitions to consume without
+   users to dynamically choose what topics/partitions to Consume without
    instantiating a full client
    ([#431](https://github.com/Shopify/sarama/pull/431)).
  - The partition-consumer now exposes the high water mark offset value returned
