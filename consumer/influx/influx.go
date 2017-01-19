@@ -35,7 +35,7 @@ func Run() {
 			return
 		}
 		tags := map[string]string{
-			"check_id": strconv.Itoa(123),
+			"check_id": strconv.Itoa(ca.CheckMetadata.Id),
 			"worker":   ca.Hostname,
 		}
 
