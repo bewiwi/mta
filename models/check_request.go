@@ -12,7 +12,3 @@ type CheckMetadaV1 struct {
 	Freq int    `json:"freq"`
 	Id   int    `json:"id"`
 }
-
-type CheckPingParam struct {
-	Host string `json:"host"`
-}

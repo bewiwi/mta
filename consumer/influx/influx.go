@@ -11,6 +11,7 @@ import (
 	"strconv"
 )
 
+
 func Run() {
 	clnt, err := client.NewHTTPClient(client.HTTPConfig{
 		Addr:     viper.GetString("INFLUX.HOST"),
@@ -29,10 +30,10 @@ func Run() {
 		log.WithError(err).Fatal("Can't create influx batch point influx")
 	}
 
-	consumer.Consume(func(ca models.CheckResponse) {
+	consumer.Consume(func(ca models.CheckResponse)error{
 		if ca.Error != "" {
 			log.Debug("Check in error, pass")
-			return
+			return nil
 		}
 		tags := map[string]string{
 			"check_id": strconv.Itoa(ca.CheckMetadata.Id),
@@ -53,14 +54,17 @@ func Run() {
 
 		if err != nil {
 			log.WithError(err).Fatal("Can't create influx point")
+			return err
 		}
 
 		bp.AddPoint(pt)
 
-		log.Debug("Push influx")
+		log.Debug("Push influx : ", ca.CheckMetadata.Id)
 		err = clnt.Write(bp)
 		if err != nil {
 			log.WithError(err).Fatal("Can't write influx point")
+			return err
 		}
+		return nil
 	})
 }

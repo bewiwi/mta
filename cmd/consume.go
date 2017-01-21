@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"github.com/bewiwi/mta/consumer/influx"
-	"github.com/spf13/cobra"
 	"github.com/bewiwi/mta/consumer/db"
+	"github.com/bewiwi/mta/consumer/influx"
 	"github.com/bewiwi/mta/consumer/stdout"
+	"github.com/spf13/cobra"
 )
 
 // consumeCmd represents the consume command

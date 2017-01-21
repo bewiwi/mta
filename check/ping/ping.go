@@ -1,4 +1,4 @@
-package checks
+package ping_check
 
 import (
 	"errors"
@@ -7,16 +7,11 @@ import (
 	"github.com/bewiwi/mta/models"
 	"github.com/sparrc/go-ping"
 	"time"
+	"github.com/bewiwi/mta/check"
 )
 
 type Ping struct {
-	Host string
-}
-
-func NewPing(host string) *Ping {
-	return &Ping{
-		Host: host,
-	}
+	Host string `json:"host"`
 }
 
 func (p *Ping) Run() (*models.CheckResponse, error) {
@@ -26,7 +21,7 @@ func (p *Ping) Run() (*models.CheckResponse, error) {
 	log.Debug("PING: ", p.Host)
 	pinger, err := ping.NewPinger(p.Host)
 	if err != nil {
-		return handleError(&response, err)
+		return check.HandleError(&response, err)
 	}
 	pinger.SetPrivileged(true)
 	pinger.Timeout = 2 * time.Second
@@ -36,7 +31,7 @@ func (p *Ping) Run() (*models.CheckResponse, error) {
 	stats := pinger.Statistics()
 	if stats.PacketsRecv < pinger.Count {
 		err = errors.New(fmt.Sprintf("Timeout (%s)", pinger.Timeout.String()))
-		return handleError(&response, err)
+		return check.HandleError(&response, err)
 	} else {
 		response.Values = map[string]float64{
 			"rtts": stats.AvgRtt.Seconds(),
@@ -47,8 +42,4 @@ func (p *Ping) Run() (*models.CheckResponse, error) {
 
 }
 
-func handleError(response *models.CheckResponse, err error) (*models.CheckResponse, error) {
-	log.WithError(err).Error("Error on ping")
-	response.Error = err.Error()
-	return response, err
-}
+

@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func Consume(f func(models.CheckResponse)) {
+func Consume(f func(models.CheckResponse)error) {
 	consumer := kafka.GetConsumer(viper.GetStringSlice("KAFKA.TOPIC_ANSWER"))
 	defer consumer.Close()
 
@@ -18,6 +18,11 @@ func Consume(f func(models.CheckResponse)) {
 		if err != nil {
 			log.WithError(err).Error("error unmarchal")
 		}
-		f(checkAnswer)
+		err = f(checkAnswer)
+		if err != nil {
+			log.Error("Error sending response")
+		} else {
+			consumer.MarkOffset(msg, "")
+		}
 	}
 }

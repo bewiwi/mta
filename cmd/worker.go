@@ -8,7 +8,7 @@ import (
 // consumerCmd represents the kafka command
 var consumerCmd = &cobra.Command{
 	Use:   "worker",
-	Short: "consume and make checks",
+	Short: "consume and make check",
 	Long:  "blabla",
 	Run: func(cmd *cobra.Command, args []string) {
 		worker.Run()

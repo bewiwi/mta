@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/bewiwi/mta/checks"
+	"github.com/bewiwi/mta/check/ping"
 	"github.com/spf13/cobra"
+	"github.com/bewiwi/mta/check/http"
 )
 
 // checkCmd represents the check command
@@ -18,8 +19,23 @@ var pingCmd = &cobra.Command{
 	Use:   "ping",
 	Short: "Run a check ping ",
 	Run: func(cmd *cobra.Command, args []string) {
-		checkPing := checks.NewPing(hostPing)
-		response, _ := checkPing.Run()
+		check := ping_check.Ping{
+			Host: hostPing,
+		}
+		response, _ := check.Run()
+		response.Print()
+	},
+}
+
+// httpCmd represents the ping command
+var httpCmd = &cobra.Command{
+	Use:   "http",
+	Short: "Run a check http",
+	Run: func(cmd *cobra.Command, args []string) {
+		check := http_check.HttpCheck{
+			Host: hostPing,
+		}
+		response, _ := check.Run()
 		response.Print()
 	},
 }
@@ -29,4 +45,7 @@ func init() {
 
 	checkCmd.AddCommand(pingCmd)
 	pingCmd.Flags().StringVarP(&hostPing, "host", "H", "127.0.0.1", "Host to ping")
+
+	checkCmd.AddCommand(httpCmd)
+	httpCmd.Flags().StringVarP(&hostPing, "host", "H", "127.0.0.1", "HttpCheck host")
 }

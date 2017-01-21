@@ -8,10 +8,10 @@ import (
 
 type CheckResponse struct {
 	CheckMetadata CheckMetadaV1
-	Timestamp int64
-	Error     string
-	Hostname  string
-	Values    map[string]float64
+	Timestamp     int64
+	Error         string
+	Hostname      string
+	Values        map[string]float64
 }
 
 func (c CheckResponse) Print() {
