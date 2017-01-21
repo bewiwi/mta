@@ -11,6 +11,16 @@ import (
 	"strconv"
 )
 
+func getInfluxBp() client.BatchPoints{
+	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
+		Database:  viper.GetString("INFLUX.DB"),
+		Precision: "us",
+	})
+	if err != nil {
+		log.WithError(err).Fatal("Can't create influx batch point influx")
+	}
+	return bp
+}
 
 func Run() {
 	clnt, err := client.NewHTTPClient(client.HTTPConfig{
@@ -22,48 +32,68 @@ func Run() {
 		log.WithError(err).Fatal("Can't init influx client")
 	}
 
-	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
-		Database:  viper.GetString("INFLUX.DB"),
-		Precision: "us",
-	})
-	if err != nil {
-		log.WithError(err).Fatal("Can't create influx batch point influx")
-	}
+	bp := getInfluxBp()
+	canConsume := make(chan bool)
+
+	go func(){
+		for{
+			time.Sleep(1*time.Second)
+			canConsume <- false
+			log.Debug("Push batch influx : ", len(bp.Points()))
+			err = clnt.Write(bp)
+			if err != nil {
+				log.WithError(err).Fatal("Can't write influx point")
+			}
+			bp = getInfluxBp()
+			canConsume <- true
+		}
+
+
+	}()
 
 	consumer.Consume(func(ca models.CheckResponse)error{
-		if ca.Error != "" {
-			log.Debug("Check in error, pass")
-			return nil
-		}
-		tags := map[string]string{
-			"check_id": strconv.Itoa(ca.CheckMetadata.Id),
-			"worker":   ca.Hostname,
-		}
+		select {
+		case value := <-canConsume:
+			if value == false {
+				//Wait OK
+				log.Debug("Wait influx push")
+				for {
+					value := <- canConsume
+					if value == true{
+						log.Debug("Consume again")
+						break
+					}
+				}
 
-		fields := make(map[string]interface{})
-		for key, value := range ca.Values {
-			fields[key] = value
-		}
+			}
+		default:
 
-		pt, err := client.NewPoint(
-			ca.CheckMetadata.Type,
-			tags,
-			fields,
-			time.Unix(ca.Timestamp/1000000000, 0),
-		)
+			if ca.Error != "" {
+				log.Debug("Check in error, pass")
+				return nil
+			}
+			tags := map[string]string{
+				"check_id": strconv.Itoa(ca.CheckMetadata.Id),
+				"worker":   ca.Hostname,
+			}
 
-		if err != nil {
-			log.WithError(err).Fatal("Can't create influx point")
-			return err
-		}
+			fields := make(map[string]interface{})
+			for key, value := range ca.Values {
+				fields[key] = value
+			}
 
-		bp.AddPoint(pt)
+			pt, err := client.NewPoint(
+				ca.CheckMetadata.Type,
+				tags,
+				fields,
+				time.Unix(ca.Timestamp/1000000000, 0),
+			)
 
-		log.Debug("Push influx : ", ca.CheckMetadata.Id)
-		err = clnt.Write(bp)
-		if err != nil {
-			log.WithError(err).Fatal("Can't write influx point")
-			return err
+			if err != nil {
+				log.WithError(err).Fatal("Can't create influx point")
+				return err
+			}
+			bp.AddPoint(pt)
 		}
 		return nil
 	})
