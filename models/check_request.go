@@ -10,5 +10,6 @@ type CheckRequestV1 struct {
 type CheckMetadaV1 struct {
 	Type string `json:"type"`
 	Freq int    `json:"freq"`
+	Timestamp int64 `json:"timestamp"`
 	Id   int    `json:"id"`
 }

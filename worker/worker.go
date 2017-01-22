@@ -13,6 +13,7 @@ import (
 	"github.com/bewiwi/mta/models"
 	"github.com/spf13/viper"
 	"github.com/bewiwi/mta/check/http"
+	"time"
 )
 
 func Run() {
@@ -52,6 +53,12 @@ func Run() {
 			log.WithError(err).Error("error unmarchal")
 		}
 
+		//Check must be run ?
+		if checkMustBeRun(checkRequest.Metadata) == false {
+			log.Warn("Check request to old")
+			consumer.MarkOffset(msg, "") // Not sur is a good idea
+			continue
+		}
 		var current_check check.CheckRun
 		if checkRequest.Metadata.Type == "ping" {
 			convert_check := ping_check.Ping{}
@@ -91,4 +98,13 @@ func Run() {
 
 	}
 
+}
+
+func checkMustBeRun(metadata models.CheckMetadaV1) bool{
+	toLate := metadata.Timestamp + int64(metadata.Freq)
+	if time.Now().Unix() > toLate {
+		log.Debug(toLate)
+		return false
+	}
+	return true
 }

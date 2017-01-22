@@ -21,18 +21,22 @@ type scheduler struct {
 func (s scheduler) schedule(check models.CheckRequestV1) {
 	go func() {
 		defer s.Wait.Done()
-		value, err := json.Marshal(check)
-		if err != nil {
-			log.WithError(err).Error("error jsonify")
-		}
 
-		msg := &sarama.ProducerMessage{
-			Topic: viper.GetString("KAFKA.TOPIC_REQUEST"),
-			Value: sarama.StringEncoder(value),
-		}
 		for {
 			log.Debug("Schedule check id : ", check.Metadata.Id)
-			_, _, err := s.Producer.SendMessage(msg)
+
+			check.Metadata.Timestamp = time.Now().Unix()
+			value, err := json.Marshal(check)
+			if err != nil {
+				log.WithError(err).Error("error jsonify")
+			}
+
+			msg := &sarama.ProducerMessage{
+				Topic: viper.GetString("KAFKA.TOPIC_REQUEST"),
+				Value: sarama.StringEncoder(value),
+			}
+
+			_, _, err = s.Producer.SendMessage(msg)
 			if err != nil {
 				log.WithError(err).Error("error sendig")
 			}

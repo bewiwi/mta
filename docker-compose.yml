@@ -9,4 +9,4 @@ services:
     privileged: true
   consumer:
     build: .
-    command: Consume stdout
+    command: consume stdout

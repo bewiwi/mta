@@ -11,7 +11,7 @@ type CheckRun interface {
 
 
 func HandleError(response *models.CheckResponse, err error) (*models.CheckResponse, error) {
-	log.WithError(err).Error("Error on ping")
+	log.WithError(err).Error("Error on check")
 	response.Error = err.Error()
 	return response, err
 }
