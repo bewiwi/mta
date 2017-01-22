@@ -24,7 +24,7 @@ func (h *HttpCheck) Run() (*models.CheckResponse, error) {
 	log.Debug("HTTP: ", h.Host)
 	var result httpstat.Result
 
-	req, err := http.NewRequest("GET", "https://"+h.Host, nil)
+	req, err := http.NewRequest(h.Method, "https://"+h.Host, nil)
 	if err != nil {
 		return check.HandleError(&response, err)
 	}
