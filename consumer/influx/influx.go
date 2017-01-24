@@ -51,7 +51,7 @@ func Run() {
 
 	}()
 
-	consumer.Consume(func(ca models.CheckResponse)error{
+	consumer.Consume(func(ca *models.CheckResponse)error{
 		select {
 		case value := <-canConsume:
 			if value == false {

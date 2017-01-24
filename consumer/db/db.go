@@ -7,8 +7,8 @@ import (
 )
 
 func Run() {
-	consumer.Consume(func(ca models.CheckResponse) error {
-		database.InsertResult(&ca)
+	consumer.Consume(func(ca *models.CheckResponse) error {
+		database.InsertResult(ca)
 		return nil
 	})
 }

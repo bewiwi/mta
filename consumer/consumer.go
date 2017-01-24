@@ -1,20 +1,20 @@
 package consumer
 
 import (
-	"encoding/json"
 	log "github.com/Sirupsen/logrus"
 	"github.com/bewiwi/mta/kafka"
 	"github.com/bewiwi/mta/models"
 	"github.com/spf13/viper"
+	"github.com/bewiwi/mta/queue"
 )
 
-func Consume(f func(models.CheckResponse)error) {
-	consumer := kafka.GetConsumer(viper.GetStringSlice("KAFKA.TOPIC_ANSWER"))
+func Consume(f func(*models.CheckResponse)error) {
+	var err error
+	consumer := kafka.GetConsumer(viper.GetStringSlice("QUEUE.KAFKA.TOPIC_ANSWER"))
 	defer consumer.Close()
 
-	for msg := range consumer.Messages() {
-		var checkAnswer models.CheckResponse
-		err := json.Unmarshal(msg.Value, &checkAnswer)
+	for {
+		checkAnswer, ackFunction := queue.GetQueue().GetNextCheckResponse()
 		if err != nil {
 			log.WithError(err).Error("error unmarchal")
 		}
@@ -22,7 +22,7 @@ func Consume(f func(models.CheckResponse)error) {
 		if err != nil {
 			log.Error("Error sending response")
 		} else {
-			consumer.MarkOffset(msg, "")
+			ackFunction()
 		}
 	}
 }

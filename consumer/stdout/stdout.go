@@ -6,7 +6,7 @@ import (
 )
 
 func Run() {
-	consumer.Consume(func(ca models.CheckResponse) error {
+	consumer.Consume(func(ca *models.CheckResponse) error {
 		ca.Print()
 		return nil
 	})

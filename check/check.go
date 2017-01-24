@@ -5,7 +5,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
-type CheckRun interface {
+type CheckRunInterface interface {
 	Run() (*models.CheckResponse, error)
 }
 

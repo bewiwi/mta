@@ -1,13 +1,14 @@
-KAFKA:
-    HOSTS:
-        - kafka.p1.gra.queue.ovh.net:9092
-    TOPIC_REQUEST: queuetest.mta_request_dev
-    TOPIC_ANSWER: queuetest.mta_answer_dev
-    CLIENTID: clientID
-    TLS: true
-    SASL_USER: myuser
-    SASL_PASSWORD: pass
-    GROUPID: dev
+QUEUE:
+  KAFKA:
+      HOSTS:
+          - kafka.p1.gra.queue.ovh.net:9092
+      TOPIC_REQUEST: queuetest.mta_request_dev
+      TOPIC_ANSWER: queuetest.mta_answer_dev
+      CLIENTID: clientID
+      TLS: true
+      SASL_USER: myuser
+      SASL_PASSWORD: pass
+      GROUPID: dev
 
 DB:
   driver: postgres

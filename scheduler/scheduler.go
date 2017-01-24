@@ -1,24 +1,21 @@
 package scheduler
 
 import (
-	"encoding/json"
 	"sync"
 	"time"
 
-	"github.com/Shopify/sarama"
 	log "github.com/Sirupsen/logrus"
 	"github.com/bewiwi/mta/database"
-	"github.com/bewiwi/mta/kafka"
 	"github.com/bewiwi/mta/models"
-	"github.com/spf13/viper"
+	"github.com/bewiwi/mta/queue"
 )
 
 type scheduler struct {
-	Producer sarama.SyncProducer
-	Wait     sync.WaitGroup
+	Queue queue.QueueInterface
+	Wait  sync.WaitGroup
 }
 
-func (s scheduler) schedule(check models.CheckRequestV1) {
+func (s *scheduler) schedule(check models.CheckRequestV1) {
 	go func() {
 		defer s.Wait.Done()
 
@@ -26,26 +23,13 @@ func (s scheduler) schedule(check models.CheckRequestV1) {
 			log.Debug("Schedule check id : ", check.Metadata.Id)
 
 			check.Metadata.Timestamp = time.Now().Unix()
-			value, err := json.Marshal(check)
-			if err != nil {
-				log.WithError(err).Error("error jsonify")
-			}
-
-			msg := &sarama.ProducerMessage{
-				Topic: viper.GetString("KAFKA.TOPIC_REQUEST"),
-				Value: sarama.StringEncoder(value),
-			}
-
-			_, _, err = s.Producer.SendMessage(msg)
-			if err != nil {
-				log.WithError(err).Error("error sendig")
-			}
+			s.Queue.PushCheckRequest(check)
 			time.Sleep(time.Duration(check.Metadata.Freq) * time.Second)
 		}
 	}()
 }
 
-func (s scheduler) RunLoopSchedule() {
+func (s *scheduler) RunLoopSchedule() {
 	checks := database.GetChecks()
 	for _, check := range checks {
 		s.Wait.Add(1)
@@ -57,7 +41,8 @@ func (s scheduler) RunLoopSchedule() {
 
 func Run() {
 	scheduler := scheduler{}
-	scheduler.Producer = kafka.GetSyncProducer()
+	scheduler.Queue = queue.GetQueue()
+	scheduler.Queue.InitProducer()
 	scheduler.RunLoopSchedule()
 
 }

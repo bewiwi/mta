@@ -12,15 +12,15 @@ import (
 func GetConfig() *sarama.Config {
 	config := sarama.NewConfig()
 
-	config.Net.TLS.Enable = viper.GetBool("KAFKA.TLS")
-	if viper.GetString("KAFKA.SASL_USER") != "" {
+	config.Net.TLS.Enable = viper.GetBool("QUEUE.KAFKA.TLS")
+	if viper.GetString("QUEUE.KAFKA.SASL_USER") != "" {
 		config.Net.SASL.Enable = true
-		config.Net.SASL.User = viper.GetString("KAFKA.SASL_USER")
-		config.Net.SASL.Password = viper.GetString("KAFKA.SASL_PASSWORD")
+		config.Net.SASL.User = viper.GetString("QUEUE.KAFKA.SASL_USER")
+		config.Net.SASL.Password = viper.GetString("QUEUE.KAFKA.SASL_PASSWORD")
 	}
 	config.Version = sarama.V0_10_0_1
-	if viper.GetString("KAFKA.CLIENTID") != "" {
-		config.ClientID = viper.GetString("KAFKA.CLIENTID")
+	if viper.GetString("QUEUE.KAFKA.CLIENTID") != "" {
+		config.ClientID = viper.GetString("QUEUE.KAFKA.CLIENTID")
 	}
 
 	return config
@@ -33,8 +33,8 @@ func GetConsumer(topic []string) *cluster.Consumer {
 	clusterConfig.Consumer.Return.Errors = true
 	clusterConfig.Group.Return.Notifications = true
 	consumer, err := cluster.NewConsumer(
-		viper.GetStringSlice("KAFKA.HOSTS"),
-		viper.GetString("KAFKA.GROUPID"),
+		viper.GetStringSlice("QUEUE.KAFKA.HOSTS"),
+		viper.GetString("QUEUE.KAFKA.GROUPID"),
 		topic,
 		clusterConfig)
 	if err != nil {
@@ -46,7 +46,7 @@ func GetConsumer(topic []string) *cluster.Consumer {
 func GetSyncProducer() sarama.SyncProducer {
 	config := GetConfig()
 	config.Producer.Return.Successes = true
-	producer, err := sarama.NewSyncProducer(viper.GetStringSlice("KAFKA.HOSTS"), config)
+	producer, err := sarama.NewSyncProducer(viper.GetStringSlice("QUEUE.KAFKA.HOSTS"), config)
 	if err != nil {
 		log.WithError(err).Fatal("Error during connecting producer")
 	}
@@ -60,14 +60,13 @@ type Producer struct {
 
 func NewProducer() *Producer {
 	return &Producer{
-		topic:    viper.GetString("KAFKA.TOPIC_ANSWER"),
+		topic:    viper.GetString("QUEUE.KAFKA.TOPIC_ANSWER"),
 		producer: GetSyncProducer(),
 	}
 }
 
 func (p *Producer) SendResponse(response *models.CheckResponse) error {
 	log.Debug("Sending response: ", response.Values)
-	response.Print()
 	var err error
 	value, err := json.Marshal(response)
 	if err != nil {
@@ -84,7 +83,7 @@ func (p *Producer) SendResponse(response *models.CheckResponse) error {
 }
 
 func init() {
-	viper.SetDefault("KAFKA.TLS", true)
-	viper.SetDefault("KAFKA.SASL_USER", "")
-	viper.SetDefault("KAFKA.SASL_PASSWORD", "")
+	viper.SetDefault("QUEUE.KAFKA.TLS", true)
+	viper.SetDefault("QUEUE.KAFKA.SASL_USER", "")
+	viper.SetDefault("QUEUE.KAFKA.SASL_PASSWORD", "")
 }
