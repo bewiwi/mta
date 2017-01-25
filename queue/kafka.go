@@ -49,7 +49,7 @@ func (k *Kafka) getClusterConfig() *cluster.Config {
 	return clusterConfig
 }
 
-func (k *Kafka) InitProducer(){
+func (k *Kafka) initProducer(){
 	log.Debug("Create new producer")
 	config := k.getConfig()
 	config.Producer.Return.Successes = true
@@ -58,6 +58,14 @@ func (k *Kafka) InitProducer(){
 		log.WithError(err).Fatal("Error during connecting producer")
 	}
 	k.syncProducer = producer
+}
+
+func (k *Kafka) InitRequestProducer(){
+	k.initProducer()
+}
+
+func (k *Kafka) InitResponseProducer(){
+	k.initProducer()
 }
 
 func (k *Kafka) getConsumer(topic []string) *cluster.Consumer {

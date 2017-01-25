@@ -42,7 +42,7 @@ func (s *scheduler) RunLoopSchedule() {
 func Run() {
 	scheduler := scheduler{}
 	scheduler.Queue = queue.GetQueue()
-	scheduler.Queue.InitProducer()
+	scheduler.Queue.InitRequestProducer()
 	scheduler.RunLoopSchedule()
 
 }

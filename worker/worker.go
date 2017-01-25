@@ -15,7 +15,8 @@ import (
 func Run() {
 	var err error
 	queue := queue.GetQueue()
-	queue.InitProducer()
+	queue.InitResponseProducer()
+	queue.InitRequestConsumer()
 
 	log.Info("Ready to consume messages...")
 	// Consume messages

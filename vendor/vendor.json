@@ -237,6 +237,12 @@
 			"revisionTime": "2016-12-13T09:38:49Z"
 		},
 		{
+			"checksumSHA1": "qik08F9+tO3aD/VsiPY19IbmT7k=",
+			"path": "github.com/streadway/amqp",
+			"revision": "63795daa9a446c920826655f26ba31c81c860fd6",
+			"revisionTime": "2016-12-24T08:20:40Z"
+		},
+		{
 			"checksumSHA1": "DymtC5ded4NqTWTiTU0PVJs/L3g=",
 			"path": "github.com/tcnksm/go-httpstat",
 			"revision": "7fc63d53d9bc2e52ac4f751bd752e1eacec8cc86",

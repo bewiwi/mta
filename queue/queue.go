@@ -7,20 +7,23 @@ import (
 )
 
 type QueueInterface interface {
-	InitProducer()
+	Init()
+	InitRequestProducer()
+	InitResponseProducer()
+	InitRequestConsumer()
+	InitResponseConsumer()
 	PushCheckRequest(models.CheckRequestV1)
 	PushCheckResponse(*models.CheckResponse) error
 	GetNextCheckRequest() (*models.CheckRequestV1, func())
 	GetNextCheckResponse() (*models.CheckResponse, func())
 }
 
-type Queue struct {
-
-}
-
-func (q Queue) init(){
-
-}
+type Queue struct {}
+func (q Queue) Init()                {}
+func (q Queue) InitRequestProducer() {}
+func (q Queue) InitRequestConsumer() {}
+func (q Queue) InitResponseConsumer() {}
+func (q Queue) InitResponseProducer() {}
 
 
 func GetQueue() QueueInterface {
@@ -29,6 +32,10 @@ func GetQueue() QueueInterface {
 		kafka := Kafka{}
 		kafka.Init()
 		return &kafka
+	}else if(queueType == "RABBITMQ") {
+		rabbit := RabbitMQ{}
+		rabbit.Init()
+		return &rabbit
 	}
 	log.Fatal("Invalid QUEUE_TYPE: ", queueType)
 	return nil

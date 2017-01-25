@@ -9,7 +9,9 @@ QUEUE:
       SASL_USER: myuser
       SASL_PASSWORD: pass
       GROUPID: dev
-
+  RABBITMQ:
+    HOST: amqp://mta:pwd@localhost:5672/
+    REQUEST_QUEUE: mta-request
 DB:
   driver: postgres
   datasource: postgres://mta:mta@localhost/mta?sslmode=disable
