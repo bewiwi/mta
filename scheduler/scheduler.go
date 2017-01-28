@@ -5,10 +5,15 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/bewiwi/mta/database"
 	"github.com/bewiwi/mta/models"
 	"github.com/bewiwi/mta/queue"
+	"github.com/spf13/viper"
 )
+
+type SchdeulerInterface interface {
+	Init()
+	GetChecks() []models.CheckRequestV1
+}
 
 type scheduler struct {
 	Queue queue.QueueInterface
@@ -30,7 +35,8 @@ func (s *scheduler) schedule(check models.CheckRequestV1) {
 }
 
 func (s *scheduler) RunLoopSchedule() {
-	checks := database.GetChecks()
+	scheduler := GetScheduler()
+	checks := scheduler.GetChecks()
 	for _, check := range checks {
 		s.Wait.Add(1)
 		s.schedule(check)
@@ -38,6 +44,19 @@ func (s *scheduler) RunLoopSchedule() {
 	s.Wait.Wait()
 	log.Debug("Scheduler quit")
 }
+
+
+func GetScheduler() SchdeulerInterface {
+	schedulerType := viper.GetString("SCHEDULER_TYPE")
+	if (schedulerType == "DB") {
+		db := DB{}
+		db.Init()
+		return &db
+	}
+	log.Fatal("Invalid SCHEDULER_TYPE: ", schedulerType)
+	return nil
+}
+
 
 func Run() {
 	scheduler := scheduler{}
