@@ -4,23 +4,36 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/bewiwi/mta/models"
 	"github.com/bewiwi/mta/queue"
+	"github.com/spf13/viper"
 )
 
-func Consume(f func(*models.CheckResponse)error) {
-	var err error
+type ConsumerInterface interface {
+	Init()
+	Push(*models.CheckResponse, func())
+}
+
+func GetConsumer() ConsumerInterface {
+	consumerType := viper.GetString("CONSUMER_TYPE")
+	if consumerType == "INFLUX" {
+		influx := InfluxDB{}
+		influx.Init()
+		return &influx
+	} else if consumerType == "STDOUT" {
+		stdout := Stdout{}
+		stdout.Init()
+		return &stdout
+	}
+	log.Fatal("Invalid CONSUMER_TYPE: ", consumerType)
+	return nil
+}
+
+func Consume() {
 	consume_queue := queue.GetQueue()
 	consume_queue.InitResponseConsumer()
+	consumer := GetConsumer()
 
 	for {
 		checkAnswer, ackFunction := consume_queue.GetNextCheckResponse()
-		if err != nil {
-			log.WithError(err).Error("error unmarchal")
-		}
-		err = f(checkAnswer)
-		if err != nil {
-			log.Error("Error sending response")
-		} else {
-			ackFunction()
-		}
+		consumer.Push(checkAnswer, ackFunction)
 	}
 }

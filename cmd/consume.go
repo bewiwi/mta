@@ -1,49 +1,20 @@
 package cmd
 
 import (
-	"github.com/bewiwi/mta/consumer/db"
-	"github.com/bewiwi/mta/consumer/influx"
-	"github.com/bewiwi/mta/consumer/stdout"
 	"github.com/spf13/cobra"
+	"github.com/bewiwi/mta/consumer"
 )
 
 // consumeCmd represents the consume command
 var consumeCmd = &cobra.Command{
 	Use:   "consume",
-	Short: "Consume response from kafka",
-}
-
-// stdoutCmd represents the stdout command
-var stdoutCmd = &cobra.Command{
-	Use:   "stdout",
-	Short: "Consume and display in stdout",
+	Short: "Consume response",
 	Run: func(cmd *cobra.Command, args []string) {
-		stdout_consumer.Run()
+		consumer.Consume()
 	},
 }
 
-// dbCmd represents the stdout command
-var dbCmd = &cobra.Command{
-	Use:   "db",
-	Short: "Consume and insert it in database",
-	Run: func(cmd *cobra.Command, args []string) {
-		db_consumer.Run()
-	},
-}
-
-// influxCmd represents the stdout command
-var influxCmd = &cobra.Command{
-	Use:   "influx",
-	Short: "Consume and insert it in influxdb",
-	Run: func(cmd *cobra.Command, args []string) {
-		influx_consumer.Run()
-	},
-}
 
 func init() {
 	RootCmd.AddCommand(consumeCmd)
-	consumeCmd.AddCommand(stdoutCmd)
-	consumeCmd.AddCommand(dbCmd)
-	consumeCmd.AddCommand(influxCmd)
-
 }

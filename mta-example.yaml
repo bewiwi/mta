@@ -1,3 +1,4 @@
+QUEUE_TYPE: RABBITMQ
 QUEUE:
   KAFKA:
       HOSTS:
@@ -12,11 +13,14 @@ QUEUE:
   RABBITMQ:
     HOST: amqp://mta:pwd@localhost:5672/
     REQUEST_QUEUE: mta-request
+
+CONSUMER_TYPE: INFLUX
+CONSUMER:
+  INFLUX:
+    HOST: http://localhost:8060
+    USER: user
+    PASSWORD: password
+
 DB:
   driver: postgres
   datasource: postgres://mta:mta@localhost/mta?sslmode=disable
-
-INFLUX:
-  HOST: http://localhost:8060
-  USER: user
-  PASSWORD: password
