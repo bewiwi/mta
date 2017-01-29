@@ -1,0 +1,22 @@
+[
+  {
+    "metadata":{
+      "id": 1,
+      "type": "ping",
+      "freq": 5
+    },
+    "param": {
+      "host": "8.8.8.8"
+    }
+  },
+  {
+    "metadata":{
+      "id": 2,
+      "type": "ping",
+      "freq": 5
+    },
+    "param": {
+      "host": "8.8.4.4"
+    }
+  }
+]

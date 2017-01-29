@@ -52,6 +52,10 @@ func GetScheduler() SchdeulerInterface {
 		db := DB{}
 		db.Init()
 		return &db
+	}else if (schedulerType == "JSON") {
+		db := Json{}
+		db.Init()
+		return &db
 	}
 	log.Fatal("Invalid SCHEDULER_TYPE: ", schedulerType)
 	return nil
