@@ -24,6 +24,7 @@ func (d *DB) Init(){
 	_, err = db.Query(`CREATE TABLE IF NOT EXISTS checks
 	(
 		id serial NOT NULL,
+		service_id, INTEGER,
 		type character varying(25),
 		config jsonb,
 		freq integer,
@@ -35,7 +36,7 @@ func (d *DB) Init(){
 }
 
 func (d *DB) GetChecks() []models.CheckRequestV1 {
-	rows, err := d.db.Query("SELECT id, type, config, freq FROM checks")
+	rows, err := d.db.Query("SELECT id, service_id, type, config, freq FROM checks")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,7 +45,7 @@ func (d *DB) GetChecks() []models.CheckRequestV1 {
 	var checks []models.CheckRequestV1
 	for rows.Next() {
 		check := models.CheckRequestV1{}
-		err := rows.Scan(&check.Metadata.Id, &check.Metadata.Type, &check.Param, &check.Metadata.Freq)
+		err := rows.Scan(&check.Metadata.Id, &check.Metadata.ServiceId, &check.Metadata.Type, &check.Param, &check.Metadata.Freq)
 		if err != nil {
 			log.Fatal(err)
 		}

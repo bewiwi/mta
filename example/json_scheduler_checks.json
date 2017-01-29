@@ -2,6 +2,7 @@
   {
     "metadata":{
       "id": 1,
+      "service_id": 1,
       "type": "ping",
       "freq": 5
     },
@@ -12,6 +13,18 @@
   {
     "metadata":{
       "id": 2,
+      "service_id": 1,
+      "type": "ping",
+      "freq": 5
+    },
+    "param": {
+      "host": "8.8.4.4"
+    }
+  },
+  {
+    "metadata":{
+      "id": 3,
+      "service_id": 2,
       "type": "ping",
       "freq": 5
     },

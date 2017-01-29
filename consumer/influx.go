@@ -48,9 +48,6 @@ func (i *InfluxDB) Init() {
 		for{
 			i.canConsume <- false
 			log.Debug("Push batch influx : ", len(i.bp.Points()))
-			//for _,p := range i.bp.Points() {
-			//	log.Debug(p)
-			//}
 			err = i.clnt.Write(i.bp)
 			if err != nil {
 				log.WithError(err).Fatal("Can't write influx point")
@@ -75,6 +72,7 @@ func (i *InfluxDB) Push(ca *models.CheckResponse, ackFunc func()) {
 	}
 	tags := map[string]string{
 		"check_id": strconv.Itoa(ca.CheckMetadata.Id),
+		"service_id": strconv.Itoa(ca.CheckMetadata.ServiceId),
 		"worker":   ca.Hostname,
 	}
 

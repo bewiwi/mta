@@ -12,4 +12,5 @@ type CheckMetadaV1 struct {
 	Freq int    `json:"freq"`
 	Timestamp int64 `json:"timestamp"`
 	Id   int    `json:"id"`
+	ServiceId int `json:"service_id"`
 }
