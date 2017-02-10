@@ -10,9 +10,18 @@ import (
 	"github.com/spf13/viper"
 )
 
-type SchdeulerInterface interface {
+type SchedulerInterface interface {
 	Init()
-	GetChecks() []models.CheckRequestV1
+	Close()
+	CreateService(service models.Service) (models.Service, error)
+	GetService(id int) (models.Service, error)
+	DeleteService(id int) error
+	UpdateService(id int, service models.Service) (models.Service, error)
+	CreateCheck(check models.CheckV1) (models.CheckV1, error)
+	DeleteCheck(id int) error
+	GetChecks(serviceId int) ([]models.CheckV1, error)
+	GetAllChecks() ([]models.CheckV1, error)
+	GetCheck(checkId int) (models.CheckV1, error)
 }
 
 type scheduler struct {
@@ -20,7 +29,7 @@ type scheduler struct {
 	Wait  sync.WaitGroup
 }
 
-func (s *scheduler) schedule(check models.CheckRequestV1) {
+func (s *scheduler) schedule(check models.CheckV1) {
 	go func() {
 		defer s.Wait.Done()
 
@@ -36,7 +45,11 @@ func (s *scheduler) schedule(check models.CheckRequestV1) {
 
 func (s *scheduler) RunLoopSchedule() {
 	scheduler := GetScheduler()
-	checks := scheduler.GetChecks()
+	defer scheduler.Close()
+	checks, err := scheduler.GetAllChecks()
+	if err != nil {
+		log.WithError(err).Fatal("Can't start scheduler")
+	}
 	for _, check := range checks {
 		s.Wait.Add(1)
 		s.schedule(check)
@@ -45,22 +58,16 @@ func (s *scheduler) RunLoopSchedule() {
 	log.Debug("Scheduler quit")
 }
 
-
-func GetScheduler() SchdeulerInterface {
+func GetScheduler() SchedulerInterface {
 	schedulerType := viper.GetString("SCHEDULER_TYPE")
-	if (schedulerType == "DB") {
-		db := DB{}
-		db.Init()
-		return &db
-	}else if (schedulerType == "JSON") {
-		db := Json{}
+	if schedulerType == "DB" {
+		db := DB2{}
 		db.Init()
 		return &db
 	}
 	log.Fatal("Invalid SCHEDULER_TYPE: ", schedulerType)
 	return nil
 }
-
 
 func Run() {
 	scheduler := scheduler{}

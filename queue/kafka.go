@@ -49,7 +49,7 @@ func (k *Kafka) getClusterConfig() *cluster.Config {
 	return clusterConfig
 }
 
-func (k *Kafka) initProducer(){
+func (k *Kafka) initProducer() {
 	log.Debug("Create new producer")
 	config := k.getConfig()
 	config.Producer.Return.Successes = true
@@ -60,11 +60,11 @@ func (k *Kafka) initProducer(){
 	k.syncProducer = producer
 }
 
-func (k *Kafka) InitRequestProducer(){
+func (k *Kafka) InitRequestProducer() {
 	k.initProducer()
 }
 
-func (k *Kafka) InitResponseProducer(){
+func (k *Kafka) InitResponseProducer() {
 	k.initProducer()
 }
 
@@ -110,7 +110,7 @@ func (k *Kafka) getConsumer(topic []string) *cluster.Consumer {
 	return consumer
 }
 
-func (k *Kafka) PushCheckRequest(check models.CheckRequestV1) {
+func (k *Kafka) PushCheckRequest(check models.CheckV1) {
 	value, err := json.Marshal(check)
 	if err != nil {
 		log.WithError(err).Error("error jsonify")
@@ -148,10 +148,10 @@ func (k *Kafka) PushCheckResponse(response *models.CheckResponse) error {
 	return nil
 }
 
-func (k *Kafka) GetNextCheckRequest() (*models.CheckRequestV1, func()) {
+func (k *Kafka) GetNextCheckRequest() (*models.CheckV1, func()) {
 	consumer := k.getConsumer(viper.GetStringSlice("QUEUE.KAFKA.TOPIC_REQUEST"))
-	msg := <- consumer.Messages()
-	var checkRequest models.CheckRequestV1
+	msg := <-consumer.Messages()
+	var checkRequest models.CheckV1
 	err := json.Unmarshal(msg.Value, &checkRequest)
 	if err != nil {
 		log.WithError(err).Error("error unmarchal")
@@ -164,7 +164,7 @@ func (k *Kafka) GetNextCheckRequest() (*models.CheckRequestV1, func()) {
 
 func (k *Kafka) GetNextCheckResponse() (*models.CheckResponse, func()) {
 	consumer := k.getConsumer(viper.GetStringSlice("QUEUE.KAFKA.TOPIC_REQUEST"))
-	msg := <- consumer.Messages()
+	msg := <-consumer.Messages()
 
 	var checkResponse models.CheckResponse
 	err := json.Unmarshal(msg.Value, &checkResponse)

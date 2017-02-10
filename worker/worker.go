@@ -5,11 +5,9 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/bewiwi/mta/check"
-	"github.com/bewiwi/mta/check/ping"
 	"github.com/bewiwi/mta/models"
-	"github.com/bewiwi/mta/check/http"
-	"time"
 	"github.com/bewiwi/mta/queue"
+	"time"
 )
 
 func Run() {
@@ -31,14 +29,14 @@ func Run() {
 		}
 		var current_check check.CheckRunInterface
 		if checkRequest.Metadata.Type == "ping" {
-			convert_check := ping_check.Ping{}
+			convert_check := check.Ping{}
 			err = json.Unmarshal(*checkRequest.Param, &convert_check)
 			if err != nil {
 				log.WithError(err).Error("error unmarchal param")
 			}
 			current_check = &convert_check
 		} else if checkRequest.Metadata.Type == "http" {
-			convert_check := http_check.HttpCheck{}
+			convert_check := check.HttpCheck{}
 			err = json.Unmarshal(*checkRequest.Param, &convert_check)
 			if err != nil {
 				log.WithError(err).Error("error unmarchal param")
@@ -68,7 +66,7 @@ func Run() {
 	}
 }
 
-func checkMustBeRun(metadata models.CheckMetadaV1) bool{
+func checkMustBeRun(metadata models.CheckMetadaV1) bool {
 	toLate := metadata.Timestamp + int64(metadata.Freq)
 	if time.Now().Unix() > toLate {
 		log.Debug(toLate)

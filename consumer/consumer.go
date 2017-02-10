@@ -10,6 +10,7 @@ import (
 type ConsumerInterface interface {
 	Init()
 	Push(*models.CheckResponse, func())
+	GetValues(check models.CheckV1, startDate int, endDate int) (map[int]float64, error)
 }
 
 func GetConsumer() ConsumerInterface {

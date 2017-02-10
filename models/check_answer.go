@@ -14,7 +14,7 @@ type CheckResponse struct {
 	Values        map[string]float64
 }
 
-func (c CheckResponse) Print() {
+func (c *CheckResponse) Print() {
 	fmt.Println("CheckID: ", c.CheckMetadata.Id)
 	fmt.Println("Hostname: ", c.Hostname)
 	if c.Error != "" {

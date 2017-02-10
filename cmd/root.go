@@ -14,7 +14,7 @@ var cfgFile string
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "mta",
-	Short: "A brief description of your application",
+	Short: "Monitoring tool",
 	Run:   func(cmd *cobra.Command, args []string) {},
 }
 
@@ -43,8 +43,11 @@ func initConfig() {
 	}
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
+	err := viper.ReadInConfig()
+	if err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	} else {
+		log.WithError(err).Fatal("Can't read config")
 	}
 	log.SetLevel(log.DebugLevel)
 }

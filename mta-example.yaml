@@ -24,7 +24,7 @@ CONSUMER:
 SCHEDULER_TYPE: JSON
 SCHEDULER:
   DB:
-    driver: postgres
-    datasource: postgres://mta:aliens123@27cca5e3-0ff5-4a36-9fdf-ee6abd60d2ea.pdb.ovh.net:21080/mta?sslmode=disable
+    DRIVER: postgres
+    DATASOURCE: postgres://user:password@host:5432/mta?sslmode=disable
   JSON:
     FILE: example/json_scheduler_checks.json

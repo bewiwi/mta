@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"github.com/bewiwi/mta/consumer"
+	"github.com/spf13/cobra"
 )
 
 // consumeCmd represents the consume command
@@ -13,7 +13,6 @@ var consumeCmd = &cobra.Command{
 		consumer.Consume()
 	},
 }
-
 
 func init() {
 	RootCmd.AddCommand(consumeCmd)
